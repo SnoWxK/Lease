@@ -15,3 +15,8 @@ mybatis-plus:
 #      logic-delete-field: is_deleted
 #      logic-delete-value: 1
 #      logic-not-delete-value: 0
+minio:
+  endpoint: http://127.0.0.1:9000
+  accessKey: admin
+  secretKey: admin123456
+  bucketName: lease
