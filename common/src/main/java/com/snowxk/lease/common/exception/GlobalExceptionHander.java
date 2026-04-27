@@ -1,16 +1,16 @@
-package com.snowxk.lease.common.exception;
-
-import com.snowxk.lease.common.result.Result;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-@ControllerAdvice
-public class GlobalExceptionHander {
-    @ExceptionHandler(Exception.class)
-    @ResponseBody
-    public Result handle(Exception e) {
-        e.printStackTrace();
-        return Result.fail();
-    }
-}
+//package com.snowxk.lease.common.exception;
+//
+//import com.snowxk.lease.common.result.Result;
+//import org.springframework.web.bind.annotation.ControllerAdvice;
+//import org.springframework.web.bind.annotation.ExceptionHandler;
+//import org.springframework.web.bind.annotation.ResponseBody;
+//
+//@ControllerAdvice
+//public class GlobalExceptionHander {
+//    @ExceptionHandler(Exception.class)
+//    @ResponseBody
+//    public Result handle(Exception e) {
+//        e.printStackTrace();
+//        return Result.fail();
+//    }
+//}
