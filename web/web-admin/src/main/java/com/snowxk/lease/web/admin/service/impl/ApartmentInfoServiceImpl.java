@@ -3,6 +3,8 @@ package com.snowxk.lease.web.admin.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.snowxk.lease.common.exception.LeaseException;
+import com.snowxk.lease.common.result.ResultCodeEnum;
 import com.snowxk.lease.model.entity.*;
 import com.snowxk.lease.model.enums.ItemType;
 import com.snowxk.lease.web.admin.mapper.*;
@@ -45,6 +47,9 @@ public class ApartmentInfoServiceImpl extends ServiceImpl<ApartmentInfoMapper, A
 
     @Autowired
     private FeeValueMapper feeValueMapper;
+    
+    @Autowired
+    private  RoomInfoMapper roomInfoMapper;
 
     @Autowired
     private GraphInfoService graphInfoService;
@@ -86,7 +91,7 @@ public class ApartmentInfoServiceImpl extends ServiceImpl<ApartmentInfoMapper, A
         }
         //插入图片列表
         List<GraphVo> graphVoList = apartmentSubmitVo.getGraphVoList();
-        if (CollectionUtils.isEmpty(graphVoList)) {
+        if (!CollectionUtils.isEmpty(graphVoList)) {
             List<GraphInfo> graphInfoList = new ArrayList<>();
             for (GraphVo graphVo : graphVoList) {
                 GraphInfo graphInfo = new GraphInfo();
@@ -150,16 +155,16 @@ public class ApartmentInfoServiceImpl extends ServiceImpl<ApartmentInfoMapper, A
         ApartmentInfo apartmentInfo = apartmentInfoMapper.selectById(id);
 
         //2.查询图片列表
-        List<GraphVo> graphVoList =graphInfoMapper.selectListByItemTypeAndId(ItemType.APARTMENT,id);
+        List<GraphVo> graphVoList = graphInfoMapper.selectListByItemTypeAndId(ItemType.APARTMENT, id);
 
         //3.查询标签列表
-        List<LabelInfo> labelInfoList =labelInfoMapper.selectListByApartmentId(id);
+        List<LabelInfo> labelInfoList = labelInfoMapper.selectListByApartmentId(id);
 
         //4.查询配套列表
         List<FacilityInfo> facilityInfoList = facilityInfoMapper.selectByApartmentId(id);
 
         //5.查询杂费列表
-        List<FeeValueVo> feeValueVoList =feeValueMapper.selectListByApartmentId(id);
+        List<FeeValueVo> feeValueVoList = feeValueMapper.selectListByApartmentId(id);
 
         //6.组装结果
         ApartmentDetailVo apartmentDetailVo = new ApartmentDetailVo();
@@ -169,6 +174,42 @@ public class ApartmentInfoServiceImpl extends ServiceImpl<ApartmentInfoMapper, A
         apartmentDetailVo.setFacilityInfoList(facilityInfoList);
         apartmentDetailVo.setFeeValueVoList(feeValueVoList);
         return apartmentDetailVo;
+    }
+
+    @Override
+    public void removeApartmentById(Long id) {
+
+        LambdaQueryWrapper<RoomInfo> roomQueryWrapper = new LambdaQueryWrapper<>();
+        roomQueryWrapper.eq(RoomInfo::getApartmentId, id);
+        Long count = roomInfoMapper.selectCount(roomQueryWrapper);
+
+        if(count>0){
+            //终止删除，响应提示信息
+            throw new LeaseException(ResultCodeEnum.ADMIN_APARTMENT_DELETE_ERROR);
+        }
+
+        super.removeById(id);
+
+        //删除图片列表
+        LambdaQueryWrapper<GraphInfo> graphLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        graphLambdaQueryWrapper.eq(GraphInfo::getItemType, ItemType.APARTMENT);
+        graphLambdaQueryWrapper.eq(GraphInfo::getItemId, id);
+        graphInfoService.remove(graphLambdaQueryWrapper);
+
+        //删除配套列表
+        LambdaQueryWrapper<ApartmentFacility> apartmentFacilityLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        apartmentFacilityLambdaQueryWrapper.eq(ApartmentFacility::getApartmentId, id);
+        apartmentFacilityService.remove(apartmentFacilityLambdaQueryWrapper);
+
+        //删除标签列表
+        LambdaQueryWrapper<ApartmentLabel> apartmentLabelLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        apartmentLabelLambdaQueryWrapper.eq(ApartmentLabel::getApartmentId, id);
+        apartmentLabelService.remove(apartmentLabelLambdaQueryWrapper);
+
+        //删除杂费列表
+        LambdaQueryWrapper<ApartmentFeeValue> apartmentFeeValueLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        apartmentFeeValueLambdaQueryWrapper.eq(ApartmentFeeValue::getApartmentId, id);
+        apartmentFeeValueService.remove(apartmentFeeValueLambdaQueryWrapper);
     }
 }
 
