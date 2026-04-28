@@ -1,6 +1,8 @@
 package com.snowxk.lease.web.admin.controller.apartment;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.snowxk.lease.common.result.Result;
 import com.snowxk.lease.model.entity.ApartmentInfo;
@@ -38,14 +40,14 @@ public class ApartmentController {
     @GetMapping("pageItem")
     public Result<IPage<ApartmentItemVo>> pageItem(@RequestParam long current, @RequestParam long size, ApartmentQueryVo queryVo) {
         Page<ApartmentItemVo> page = new Page<ApartmentItemVo>(current, size);
-        IPage<ApartmentItemVo> pageInfo =apartmentInfoService.pageItem(page, queryVo);
+        IPage<ApartmentItemVo> pageInfo = apartmentInfoService.pageItem(page, queryVo);
         return Result.ok(pageInfo);
     }
 
     @Operation(summary = "根据ID获取公寓详细信息")
     @GetMapping("getDetailById")
     public Result<ApartmentDetailVo> getDetailById(@RequestParam Long id) {
-        ApartmentDetailVo result=apartmentInfoService.getDetailById(id);
+        ApartmentDetailVo result = apartmentInfoService.getDetailById(id);
         return Result.ok(result);
     }
 
@@ -59,13 +61,20 @@ public class ApartmentController {
     @Operation(summary = "根据id修改公寓发布状态")
     @PostMapping("updateReleaseStatusById")
     public Result updateReleaseStatusById(@RequestParam Long id, @RequestParam ReleaseStatus status) {
+        LambdaUpdateWrapper<ApartmentInfo> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(ApartmentInfo::getId, id)
+                .set(ApartmentInfo::getIsRelease, status);
+        apartmentInfoService.update(updateWrapper);
         return Result.ok();
     }
 
     @Operation(summary = "根据区县id查询公寓信息列表")
     @GetMapping("listInfoByDistrictId")
     public Result<List<ApartmentInfo>> listInfoByDistrictId(@RequestParam Long id) {
-        return Result.ok();
+        LambdaQueryWrapper<ApartmentInfo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ApartmentInfo::getDistrictId, id);
+        List<ApartmentInfo> list = apartmentInfoService.list(queryWrapper);
+        return Result.ok(list);
     }
 }
 
