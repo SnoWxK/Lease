@@ -1,5 +1,6 @@
 package com.snowxk.lease.web.admin.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.snowxk.lease.model.entity.ViewAppointment;
 import com.snowxk.lease.web.admin.vo.appointment.AppointmentQueryVo;
 import com.snowxk.lease.web.admin.vo.appointment.AppointmentVo;
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface ViewAppointmentService extends IService<ViewAppointment> {
 
+    IPage<AppointmentVo> pageAppointment(Page<AppointmentVo> page, AppointmentQueryVo queryVo);
 }
