@@ -1,10 +1,12 @@
 package com.snowxk.lease.web.admin.mapper;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.snowxk.lease.model.entity.SystemUser;
 import com.snowxk.lease.web.admin.vo.system.user.SystemUserItemVo;
 import com.snowxk.lease.web.admin.vo.system.user.SystemUserQueryVo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
 * @author liubo
@@ -12,8 +14,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 * @createDate 2023-07-24 15:48:00
 * @Entity com.atguigu.lease.model.SystemUser
 */
+@Mapper
 public interface SystemUserMapper extends BaseMapper<SystemUser> {
 
+    IPage<SystemUserItemVo> pageSystemUser(Page<SystemUser> page, SystemUserQueryVo queryVo);
 }
 
 
