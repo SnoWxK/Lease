@@ -16,8 +16,21 @@ spring:
       pool-name: SPHHikariPool # 连接池名称
   jackson:
     time-zone: GMT+8
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 springdoc:
   default-flat-param-object: true
+
+aliyun:
+  sms:
+    access-key-id: LTAI5tRnk284Pk3GHwfi8sbV
+    access-key-secret: ${ALIYUN_SECRET}
+    endpoint: dysmsapi.aliyuncs.com
