@@ -1,11 +1,14 @@
 package com.snowxk.lease.web.admin.controller.login;
 
 
+import com.snowxk.lease.common.login.LoginUserHolder;
 import com.snowxk.lease.common.result.Result;
+import com.snowxk.lease.common.utils.JwtUtil;
 import com.snowxk.lease.web.admin.service.LoginService;
 import com.snowxk.lease.web.admin.vo.login.CaptchaVo;
 import com.snowxk.lease.web.admin.vo.login.LoginVo;
 import com.snowxk.lease.web.admin.vo.system.user.SystemUserInfoVo;
+import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +39,10 @@ public class LoginController {
     @Operation(summary = "获取登陆用户个人信息")
     @GetMapping("info")
     public Result<SystemUserInfoVo> info() {
-        return Result.ok();
+//        Claims claims = JwtUtil.parseToken(token);
+//        Long userId = claims.get("userId", Long.class);
+        Long userId = LoginUserHolder.getLoginUser().getUserId();
+        SystemUserInfoVo systemUserInfoVo = service.getLoginUserInfoById(userId);
+        return Result.ok(systemUserInfoVo);
     }
 }
