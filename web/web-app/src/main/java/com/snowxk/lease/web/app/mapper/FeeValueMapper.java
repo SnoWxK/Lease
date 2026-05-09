@@ -3,6 +3,7 @@ package com.snowxk.lease.web.app.mapper;
 import com.snowxk.lease.model.entity.FeeValue;
 import com.snowxk.lease.web.app.vo.fee.FeeValueVo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
@@ -12,8 +13,10 @@ import java.util.List;
 * @createDate 2023-07-26 11:12:39
 * @Entity com.snowxk.lease.model.entity.FeeValue
 */
+@Mapper
 public interface FeeValueMapper extends BaseMapper<FeeValue> {
 
+    List<FeeValueVo> selectListByApartmentId(Long apartmentId);
 }
 
 

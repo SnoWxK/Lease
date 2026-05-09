@@ -3,6 +3,7 @@ package com.snowxk.lease.web.app.mapper;
 import com.snowxk.lease.model.entity.ApartmentInfo;
 import com.snowxk.lease.web.app.vo.apartment.ApartmentItemVo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
 * @author liubo
@@ -10,6 +11,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2023-07-26 11:12:39
 * @Entity com.snowxk.lease.model.entity.ApartmentInfo
 */
+@Mapper
 public interface ApartmentInfoMapper extends BaseMapper<ApartmentInfo> {
 
 }

@@ -2,6 +2,8 @@ package com.snowxk.lease.web.app.service;
 
 import com.snowxk.lease.model.entity.ApartmentInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.snowxk.lease.web.app.vo.apartment.ApartmentDetailVo;
+import com.snowxk.lease.web.app.vo.apartment.ApartmentItemVo;
 
 /**
  * @author liubo
@@ -9,4 +11,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @createDate 2023-07-26 11:12:39
  */
 public interface ApartmentInfoService extends IService<ApartmentInfo> {
+    ApartmentItemVo selectApartmentItemVoById(Long id);
+
+    ApartmentDetailVo getApartmentDetailById(Long id);
 }
