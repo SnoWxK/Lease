@@ -36,7 +36,7 @@ public class RoomController {
     @GetMapping("getDetailById")
     public Result<RoomDetailVo> getDetailById(@RequestParam Long id) {
         RoomDetailVo roomInfo = service.getDetailById(id);
-        return Result.ok();
+        return Result.ok(roomInfo);
     }
 
     @Operation(summary = "根据公寓id分页查询房间列表")
