@@ -3,6 +3,7 @@ package com.snowxk.lease.web.admin.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.snowxk.lease.common.constant.RedisConstant;
 import com.snowxk.lease.model.entity.*;
 import com.snowxk.lease.model.enums.ItemType;
 import com.snowxk.lease.web.admin.mapper.*;
@@ -16,6 +17,7 @@ import com.snowxk.lease.web.admin.vo.room.RoomQueryVo;
 import com.snowxk.lease.web.admin.vo.room.RoomSubmitVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -73,6 +75,9 @@ public class RoomInfoServiceImpl extends ServiceImpl<RoomInfoMapper, RoomInfo>
     @Autowired
     private LeaseTermMapper leaseTermMapper;
 
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
     @Override
     public void saveOrUpdateRoom(RoomSubmitVo roomSubmitVo) {
         boolean isUpdate = roomSubmitVo.getId() != null;
@@ -111,6 +116,10 @@ public class RoomInfoServiceImpl extends ServiceImpl<RoomInfoMapper, RoomInfo>
             LambdaQueryWrapper<RoomLeaseTerm> termQueryWrapper = new LambdaQueryWrapper<>();
             termQueryWrapper.eq(RoomLeaseTerm::getRoomId, roomSubmitVo.getId());
             roomLeaseTermService.remove(termQueryWrapper);
+
+            //删除缓存
+            String key = RedisConstant.APP_ROOM_PREFIX + roomSubmitVo.getId();
+            redisTemplate.delete(key);
         }
 
         //1.保存新的graphInfoList
@@ -265,6 +274,10 @@ public class RoomInfoServiceImpl extends ServiceImpl<RoomInfoMapper, RoomInfo>
         LambdaQueryWrapper<RoomLeaseTerm> termQueryWrapper = new LambdaQueryWrapper<>();
         termQueryWrapper.eq(RoomLeaseTerm::getRoomId, id);
         roomLeaseTermService.remove(termQueryWrapper);
+
+        //删除缓存
+        String key=RedisConstant.APP_ROOM_PREFIX+id;
+        redisTemplate.delete(key);
     }
 }
 
